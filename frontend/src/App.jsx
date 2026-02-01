@@ -1,7 +1,32 @@
+import { Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import About from "./pages/About";
+import Cart from "./pages/Cart";
+import Collection from "./pages/Collection";
+import Contact from "./pages/Contact";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Orders from "./pages/Orders";
+import PlaceOrder from "./pages/PlaceOrder";
+import Product from "./pages/Product";
+
 function App() {
   return (
-    <div>
-      <h1 class="font-bold text-3xl underline">Hello world!</h1>
+    <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+      <Navbar />
+      <Routes>
+        <Route element={<Home />} path="/" />
+        <Route element={<About />} path="/about" />
+        <Route element={<Collection />} path="/collection" />
+        <Route element={<Cart />} path="/cart" />
+        <Route element={<Contact />} path="/contact" />
+        <Route element={<Login />} path="/login" />
+        <Route element={<Orders />} path="/orders" />
+        <Route element={<PlaceOrder />} path="/place-order" />
+        <Route element={<Product />} path="/product" />
+      </Routes>
+      <Footer />
     </div>
   );
 }
