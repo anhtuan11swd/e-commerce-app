@@ -2,6 +2,7 @@ import axios from "axios";
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { products as mockProducts } from "../assets/frontend_assets/assets";
 
 /**
  * ShopContext - Context quản lý trạng thái toàn cục của cửa hàng e-commerce
@@ -12,9 +13,9 @@ const ShopContext = createContext();
  * ShopContextProvider - Provider cung cấp các chức năng quản lý giỏ hàng, tìm kiếm, tiền tệ
  */
 export default function ShopContextProvider({ children }) {
-  const [products, _setProducts] = useState([]);
+  const [products] = useState(mockProducts);
   const [currency] = useState("$");
-  const [deliveryFee] = useState(10);
+  const [deliveryFee] = useState(10000);
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
@@ -125,6 +126,7 @@ export default function ShopContextProvider({ children }) {
     navigate,
     products,
     search,
+    setCartItems,
     setSearch,
     setShowSearch,
     showSearch,

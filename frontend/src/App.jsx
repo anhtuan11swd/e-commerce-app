@@ -24,7 +24,7 @@ function App() {
         <Route element={<Login />} path="/login" />
         <Route element={<Orders />} path="/orders" />
         <Route element={<PlaceOrder />} path="/place-order" />
-        <Route element={<Product />} path="/product" />
+        <Route element={<Product />} path="/product/:productId" />
       </Routes>
       <Footer />
     </div>
