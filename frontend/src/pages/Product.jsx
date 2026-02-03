@@ -23,7 +23,7 @@ const Product = () => {
       const product = products.find((item) => item._id === productId);
       if (product) {
         setProductData(product);
-        setImage(product.images[0]);
+        setImage(product.image?.[0]);
       }
     };
 
@@ -62,7 +62,7 @@ const Product = () => {
         {/* Gallery ảnh */}
         <div className="flex sm:flex-row flex-col-reverse flex-1 gap-3">
           <div className="flex sm:flex-col justify-between sm:justify-normal w-full sm:w-[18.7%]">
-            {productData.images.map((img, index) => (
+            {productData.image.map((img, index) => (
               <button
                 className="bg-transparent sm:mb-3 p-0 border border-gray-200 w-[24%] sm:w-full cursor-pointer shrink-0"
                 key={`thumbnail-${productData._id}-${index}`}

@@ -19,26 +19,34 @@ export default function ShopContextProvider({ children }) {
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [productsLoading, setProductsLoading] = useState(true);
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   /**
-   * getProductsData - Lấy danh sách sản phẩm từ API
+   * getProductsData - Lấy danh sách sản phẩm từ API backend
    */
   const getProductsData = useCallback(async () => {
     try {
+      setProductsLoading(true);
       const response = await axios.get(`${backendUrl}/api/product/list`);
       if (response.data.success) {
         setProducts(response.data.products);
+      } else {
+        console.log("Không thể lấy dữ liệu sản phẩm từ API");
+        setProducts([]);
       }
     } catch (error) {
-      toast.error(error.message);
+      console.log("Lỗi khi kết nối với backend:", error.message);
+      setProducts([]);
+    } finally {
+      setProductsLoading(false);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch products khi component mount
   useEffect(() => {
-    getProductsData(); // eslint-disable-line react-hooks/set-state-in-effect
+    getProductsData();
   }, [getProductsData]);
 
   /**
@@ -144,6 +152,7 @@ export default function ShopContextProvider({ children }) {
     getCartCount,
     navigate,
     products,
+    productsLoading,
     search,
     setCartItems,
     setSearch,

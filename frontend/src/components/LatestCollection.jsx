@@ -4,7 +4,7 @@ import ProductItem from "./ProductItem";
 import Title from "./Title";
 
 const LatestCollection = () => {
-  const { products } = useContext(ShopContext);
+  const { products, productsLoading } = useContext(ShopContext);
 
   // Lấy 10 sản phẩm mới nhất dựa trên thời gian tạo
   const latestProducts = useMemo(() => {
@@ -26,9 +26,35 @@ const LatestCollection = () => {
 
       {/* Lưới sản phẩm */}
       <div className="gap-4 gap-y-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {latestProducts.map((product) => (
-          <ProductItem key={product._id} product={product} />
-        ))}
+        {productsLoading ? (
+          // Loading state
+          [
+            "sk1",
+            "sk2",
+            "sk3",
+            "sk4",
+            "sk5",
+            "sk6",
+            "sk7",
+            "sk8",
+            "sk9",
+            "sk10",
+          ].map((key) => (
+            <div className="animate-pulse" key={key}>
+              <div className="bg-gray-200 mb-3 rounded-lg aspect-square"></div>
+              <div className="bg-gray-200 mb-2 rounded h-4"></div>
+              <div className="bg-gray-200 rounded w-2/3 h-4"></div>
+            </div>
+          ))
+        ) : latestProducts.length > 0 ? (
+          latestProducts.map((product) => (
+            <ProductItem key={product._id} product={product} />
+          ))
+        ) : (
+          <p className="col-span-full py-10 text-gray-500 text-center">
+            Đang tải sản phẩm...
+          </p>
+        )}
       </div>
     </div>
   );

@@ -103,7 +103,7 @@ const Cart = () => {
                   <img
                     alt={product.name}
                     className="w-16 sm:w-20"
-                    src={product.images[0]}
+                    src={product.image?.[0] || product.images?.[0]}
                   />
                   <div>
                     <p className="font-medium text-xs sm:text-lg">

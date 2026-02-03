@@ -9,7 +9,8 @@ import { ShopContext } from "../context/ShopContext";
  */
 const Collection = () => {
   // Lấy dữ liệu từ ShopContext
-  const { products, search, showSearch } = useContext(ShopContext);
+  const { products, productsLoading, search, showSearch } =
+    useContext(ShopContext);
 
   // State cho bộ lọc
   const [category, setCategory] = useState([]); // Danh mục được chọn
@@ -18,10 +19,12 @@ const Collection = () => {
   const [showFilters, setShowFilters] = useState(false); // Hiển thị bộ lọc trên mobile
 
   // Lấy danh sách categories và subcategories duy nhất từ products
-  const availableCategories = [...new Set(products.map((p) => p.category))];
-  const availableSubCategories = [
-    ...new Set(products.map((p) => p.subcategory)),
-  ];
+  const availableCategories = productsLoading
+    ? []
+    : [...new Set(products.map((p) => p.category))];
+  const availableSubCategories = productsLoading
+    ? []
+    : [...new Set(products.map((p) => p.subCategory))];
 
   // Xử lý checkbox category
   const handleCategoryChange = (value) => {
@@ -30,7 +33,7 @@ const Collection = () => {
     );
   };
 
-  // Xử lý checkbox subcategory
+  // Xử lý checkbox subCategory
   const handleSubCategoryChange = (value) => {
     setSubCategory((prev) =>
       prev.includes(value)
@@ -60,10 +63,10 @@ const Collection = () => {
       );
     }
 
-    // Filter theo subcategory
+    // Filter theo subCategory
     if (subCategory.length > 0) {
       productsCopy = productsCopy.filter((item) =>
-        subCategory.includes(item.subcategory),
+        subCategory.includes(item.subCategory),
       );
     }
 
@@ -176,7 +179,18 @@ const Collection = () => {
 
         {/* Lưới sản phẩm responsive */}
         <div className="gap-4 gap-y-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filterProducts.length > 0 ? (
+          {productsLoading ? (
+            // Loading state
+            ["sk1", "sk2", "sk3", "sk4", "sk5", "sk6", "sk7", "sk8"].map(
+              (key) => (
+                <div className="animate-pulse" key={key}>
+                  <div className="bg-gray-200 mb-3 rounded-lg aspect-square"></div>
+                  <div className="bg-gray-200 mb-2 rounded h-4"></div>
+                  <div className="bg-gray-200 rounded w-2/3 h-4"></div>
+                </div>
+              ),
+            )
+          ) : filterProducts.length > 0 ? (
             // Render danh sách sản phẩm đã lọc
             filterProducts.map((product) => (
               <ProductItem key={product._id} product={product} />
@@ -184,7 +198,9 @@ const Collection = () => {
           ) : (
             // Thông báo khi không có sản phẩm
             <p className="col-span-full py-10 text-gray-500 text-center">
-              Không tìm thấy sản phẩm nào
+              {products.length === 0
+                ? "Đang tải dữ liệu sản phẩm..."
+                : "Không tìm thấy sản phẩm nào"}
             </p>
           )}
         </div>
