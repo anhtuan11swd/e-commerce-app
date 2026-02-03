@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { ShopContext } from "../context/ShopContext";
 
@@ -11,7 +11,14 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   // Lấy dữ liệu từ ShopContext
-  const { backendUrl, setToken } = useContext(ShopContext);
+  const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+
+  // Redirect sau khi login
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token, navigate]);
 
   // Xử lý submit form đăng nhập/đăng ký
   const onSubmitHandler = async (e) => {

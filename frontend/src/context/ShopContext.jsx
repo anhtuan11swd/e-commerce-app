@@ -1,8 +1,7 @@
 import axios from "axios";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { products as mockProducts } from "../assets/frontend_assets/assets";
 
 /**
  * ShopContext - Context quản lý trạng thái toàn cục của cửa hàng e-commerce
@@ -13,15 +12,34 @@ const ShopContext = createContext();
  * ShopContextProvider - Provider cung cấp các chức năng quản lý giỏ hàng, tìm kiếm, tiền tệ
  */
 export default function ShopContextProvider({ children }) {
-  const [products] = useState(mockProducts);
+  const [products, setProducts] = useState([]);
   const [currency] = useState("$");
   const [deliveryFee] = useState(10000);
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const token = localStorage.getItem("token");
+
+  /**
+   * getProductsData - Lấy danh sách sản phẩm từ API
+   */
+  const getProductsData = useCallback(async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/product/list`);
+      if (response.data.success) {
+        setProducts(response.data.products);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch products khi component mount
+  useEffect(() => {
+    getProductsData(); // eslint-disable-line react-hooks/set-state-in-effect
+  }, [getProductsData]);
 
   /**
    * addToCart - Thêm sản phẩm vào giỏ hàng
@@ -118,6 +136,7 @@ export default function ShopContextProvider({ children }) {
 
   const value = {
     addToCart,
+    backendUrl,
     cartItems,
     currency,
     deliveryFee,
@@ -129,7 +148,9 @@ export default function ShopContextProvider({ children }) {
     setCartItems,
     setSearch,
     setShowSearch,
+    setToken,
     showSearch,
+    token,
     updateQuantity,
   };
 

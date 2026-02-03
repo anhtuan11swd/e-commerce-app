@@ -1,12 +1,20 @@
-import { products } from "../assets/frontend_assets/assets";
+import { useContext, useEffect, useMemo } from "react";
+import { ShopContext } from "../context/ShopContext";
 import ProductItem from "./ProductItem";
 import Title from "./Title";
 
 const LatestCollection = () => {
+  const { products } = useContext(ShopContext);
+
   // Lấy 10 sản phẩm mới nhất dựa trên thời gian tạo
-  const latestProducts = [...products]
-    .sort((a, b) => b.createdAt - a.createdAt)
-    .slice(0, 10);
+  const latestProducts = useMemo(() => {
+    return [...products].sort((a, b) => b.createdAt - a.createdAt).slice(0, 10);
+  }, [products]);
+
+  // Logic lọc products - sẽ được trigger khi products thay đổi
+  useEffect(() => {
+    // logic lọc products
+  }, []);
 
   return (
     <div className="my-10">

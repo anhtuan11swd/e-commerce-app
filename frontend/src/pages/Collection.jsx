@@ -83,6 +83,8 @@ const Collection = () => {
     return productsCopy;
   }, [category, subCategory, search, showSearch, sortType, products]);
 
+  // Logic lọc và sắp xếp - đã được implement trong filterProducts useMemo
+
   return (
     // Layout chính: sidebar bộ lọc + lưới sản phẩm
     <div className="flex sm:flex-row flex-col gap-1 sm:gap-10 pt-10 border-t">

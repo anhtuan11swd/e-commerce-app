@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { assets } from "../assets/frontend_assets/assets";
+import { ShopContext } from "../context/ShopContext";
 
 // Component helper cho NavLink với hiệu ứng active
 // NavLinkWithActive: Component hỗ trợ hiển thị trạng thái active cho các liên kết điều hướng
 const NavLinkWithActive = ({ to, children }) => (
   <NavLink
     className={({ isActive }) =>
-      `flex flex-col items-center gap-1 ${isActive ? "text-black" : "text-gray-700"}`
+      `flex flex-col items-center gap-1 ${
+        isActive ? "text-black" : "text-gray-700"
+      }`
     }
     to={to}
   >
@@ -16,7 +19,9 @@ const NavLinkWithActive = ({ to, children }) => (
         <p>{children}</p>
         {/* Đường kẻ dưới (underline) chỉ hiển thị khi link đang active */}
         <hr
-          className={`w-2/4 border-none h-[1.5px] bg-gray-700 ${isActive ? "block" : "hidden"}`}
+          className={`w-2/4 border-none h-[1.5px] bg-gray-700 ${
+            isActive ? "block" : "hidden"
+          }`}
         />
       </>
     )}
@@ -29,8 +34,18 @@ const NavLinkWithActive = ({ to, children }) => (
 const Navbar = () => {
   // State để kiểm soát hiển thị menu mobile
   const [visible, setVisible] = useState(false);
-  // State cho số lượng sản phẩm trong giỏ hàng (tạm thời hardcode, sẽ thay bằng context sau)
-  const [cartCount] = useState(0); // Thay thế bằng context thực tế sau này
+
+  // Lấy dữ liệu từ ShopContext
+  const { getCartCount, navigate, setToken, setCartItems } =
+    useContext(ShopContext);
+
+  // Hàm đăng xuất
+  const logout = () => {
+    navigate("/login");
+    localStorage.removeItem("token");
+    setToken("");
+    setCartItems({});
+  };
 
   return (
     <div className="flex justify-between items-center py-5 font-medium">
@@ -58,18 +73,26 @@ const Navbar = () => {
 
         {/* Dropdown hồ sơ - Menu xổ xuống hồ sơ */}
         <div className="group relative">
-          <Link to="/login">
-            <img
-              alt="Hồ sơ"
-              className="w-5 cursor-pointer"
-              src={assets.profileIcon}
-            />
-          </Link>
+          <img
+            alt="Hồ sơ"
+            className="w-5 cursor-pointer"
+            src={assets.profileIcon}
+          />
           <div className="hidden group-hover:block right-0 absolute pt-4 dropdown-menu">
             <div className="flex flex-col gap-2 bg-slate-100 px-5 py-3 rounded w-36 text-gray-500">
               <p className="hover:text-black cursor-pointer">Hồ sơ của tôi</p>
               <p className="hover:text-black cursor-pointer">Đơn hàng</p>
-              <p className="hover:text-black cursor-pointer">Đăng xuất</p>
+              <p
+                className="hover:text-black cursor-pointer"
+                onClick={logout}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    logout();
+                  }
+                }}
+              >
+                Đăng xuất
+              </p>
             </div>
           </div>
         </div>
@@ -78,7 +101,7 @@ const Navbar = () => {
         <Link className="relative" to="/cart">
           <img alt="Giỏ hàng" className="w-5 min-w-5" src={assets.cartIcon} />
           <p className="right-[-5px] bottom-[-5px] absolute bg-black rounded-full w-4 aspect-square text-[8px] text-white text-center leading-4">
-            {cartCount}
+            {getCartCount()}
           </p>
         </Link>
 

@@ -1,12 +1,22 @@
-import { products } from "../assets/frontend_assets/assets";
+import { useContext, useEffect, useMemo } from "react";
+import { ShopContext } from "../context/ShopContext";
 import ProductItem from "./ProductItem";
 import Title from "./Title";
 
 const BestSeller = () => {
+  const { products } = useContext(ShopContext);
+
   // Lọc sản phẩm bán chạy nhất (bestseller: true) và lấy 5 sản phẩm đầu tiên
-  const bestSellerProducts = products
-    .filter((product) => product.bestseller === true)
-    .slice(0, 5);
+  const bestSellerProducts = useMemo(() => {
+    return products
+      .filter((product) => product.bestseller === true)
+      .slice(0, 5);
+  }, [products]);
+
+  // Logic lọc products - sẽ được trigger khi products thay đổi
+  useEffect(() => {
+    // logic lọc products
+  }, []);
 
   return (
     <div className="my-10">
