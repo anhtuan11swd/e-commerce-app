@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { ShopContext } from "../context/ShopContext";
 
 const Orders = () => {
+  const { backendUrl, token } = useContext(ShopContext);
+
   // Định dạng giá tiền theo chuẩn Việt Nam
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -9,53 +14,41 @@ const Orders = () => {
     }).format(price);
   };
 
-  // State lưu trữ dữ liệu đơn hàng từ localStorage
-  const [orderData, setOrderData] = useState(() => {
-    // Khởi tạo với đơn hàng đã lưu hoặc mảng trống
-    const savedOrders = localStorage.getItem("orders");
-    if (savedOrders) {
-      const parsedOrders = JSON.parse(savedOrders);
-      // Đảm bảo tất cả đơn hàng có mảng ảnh hợp lệ
-      return parsedOrders.map((order) => ({
-        ...order,
-        images:
-          Array.isArray(order.images) && order.images.length > 0
-            ? order.images
-            : [""],
-      }));
-    } else {
-      return [];
-    }
-  });
+  // State lưu trữ dữ liệu đơn hàng
+  const [orderData, setOrderData] = useState([]);
 
-  // Làm mới đơn hàng khi component mount (trường hợp đơn hàng được cập nhật từ PlaceOrder)
+  // Load đơn hàng khi component mount hoặc token thay đổi
   useEffect(() => {
-    const handleStorageChange = () => {
-      const savedOrders = localStorage.getItem("orders");
-      if (savedOrders) {
-        const parsedOrders = JSON.parse(savedOrders);
-        // Ensure all orders have valid image arrays
-        const safeOrders = parsedOrders.map((order) => ({
-          ...order,
-          images:
-            Array.isArray(order.images) && order.images.length > 0
-              ? order.images
-              : [""],
-        }));
-        setOrderData(safeOrders);
+    const loadOrderData = async () => {
+      try {
+        if (!token) return;
+
+        const response = await axios.post(
+          `${backendUrl}/api/order/userorders`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+
+        if (response.data.success) {
+          const allOrdersItem = [];
+          response.data.orders.forEach((order) => {
+            order.items.forEach((item) => {
+              item.status = order.status;
+              item.payment = order.payment;
+              item.paymentMethod = order.paymentMethod;
+              item.date = order.date;
+              allOrdersItem.push(item);
+            });
+          });
+          setOrderData(allOrdersItem.reverse());
+        }
+      } catch (error) {
+        toast.error(error.message || "Không thể tải đơn hàng");
       }
     };
 
-    // Listen for storage changes
-    window.addEventListener("storage", handleStorageChange);
-
-    // Also check immediately in case orders were updated in the same tab
-    handleStorageChange();
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+    loadOrderData();
+  }, [token, backendUrl]);
 
   // Render danh sách đơn hàng
   return (
@@ -78,7 +71,7 @@ const Orders = () => {
               <img
                 alt=""
                 className="w-16 sm:w-20"
-                src={item.images?.[0] || null}
+                src={item.image?.[0] || null}
               />
               <div>
                 <p className="font-medium sm:text-base">{item.name}</p>

@@ -60,6 +60,7 @@ export default function ShopContextProvider({ children }) {
       return;
     }
 
+    // Cập nhật local cart
     const cartData = structuredClone(cartItems);
 
     if (cartData[itemId]) {
@@ -74,12 +75,17 @@ export default function ShopContextProvider({ children }) {
 
     setCartItems(cartData);
 
+    // Đồng bộ với database nếu có token
     if (token) {
-      await axios.post(
-        `${backendUrl}/api/cart/add`,
-        { itemId, size },
-        { headers: { token } },
-      );
+      try {
+        await axios.post(
+          `${backendUrl}/api/cart/add`,
+          { itemId, size },
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+      } catch (error) {
+        toast.error(error.message || "Không thể thêm vào giỏ hàng");
+      }
     }
   };
 
@@ -113,14 +119,45 @@ export default function ShopContextProvider({ children }) {
       setCartItems(cartData);
 
       if (token) {
-        await axios.post(
-          `${backendUrl}/api/cart/update`,
-          { itemId, quantity, size },
-          { headers: { token } },
-        );
+        try {
+          await axios.post(
+            `${backendUrl}/api/cart/update`,
+            { itemId, quantity, size },
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+        } catch (error) {
+          toast.error(error.message || "Không thể cập nhật số lượng");
+        }
       }
     }
   };
+
+  /**
+   * getUserCart - Lấy dữ liệu giỏ hàng của user từ database
+   * @param {string} token - Token xác thực
+   */
+  const getUserCart = useCallback(async (token) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/cart/get`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (response.data.success) {
+        setCartItems(response.data.cartData);
+      }
+    } catch (error) {
+      toast.error(error.message || "Không thể tải giỏ hàng");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Load user cart khi có token (login/reload)
+  useEffect(() => {
+    if (token && localStorage.getItem("token")) {
+      getUserCart(localStorage.getItem("token"));
+    }
+  }, [token, getUserCart]);
 
   /**
    * getCartAmount - Tính tổng tiền giỏ hàng
@@ -150,6 +187,7 @@ export default function ShopContextProvider({ children }) {
     deliveryFee,
     getCartAmount,
     getCartCount,
+    getUserCart,
     navigate,
     products,
     productsLoading,

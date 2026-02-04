@@ -7,14 +7,16 @@ Tài liệu này cung cấp các dữ liệu JSON mẫu và hướng dẫn để
 ---
 
 ## 1. Đặt hàng (Thanh toán khi nhận hàng - COD)
+
 Đặt hàng với phương thức thanh toán khi nhận hàng.
 
 - **Phương thức:** `POST`
 - **URL:** `{{base_url}}/place`
-- **Headers:** 
+- **Headers:**
   - `Authorization`: `Bearer <user_token>`
 - **Định dạng Body:** `JSON (raw)`
 - **Dữ liệu mẫu:**
+
 ```json
 {
   "items": [
@@ -44,13 +46,15 @@ Tài liệu này cung cấp các dữ liệu JSON mẫu và hướng dẫn để
 ---
 
 ## 2. Lấy danh sách đơn hàng của người dùng
+
 Xem lịch sử mua hàng của người dùng đang đăng nhập.
 
 - **Phương thức:** `POST`
 - **URL:** `{{base_url}}/userorders`
-- **Headers:** 
+- **Headers:**
   - `Authorization`: `Bearer <user_token>`
 - **Định dạng Body:** `JSON (raw)` (Không cần gửi dữ liệu, userId được lấy từ token)
+
 ```json
 {}
 ```
@@ -58,13 +62,15 @@ Xem lịch sử mua hàng của người dùng đang đăng nhập.
 ---
 
 ## 3. Liệt kê tất cả đơn hàng (Admin)
+
 Dành cho quản trị viên để xem toàn bộ đơn hàng trong hệ thống.
 
 - **Phương thức:** `POST`
 - **URL:** `{{base_url}}/list`
-- **Headers:** 
+- **Headers:**
   - `Authorization`: `Bearer <admin_token>`
 - **Định dạng Body:** `JSON (raw)`
+
 ```json
 {}
 ```
@@ -72,27 +78,31 @@ Dành cho quản trị viên để xem toàn bộ đơn hàng trong hệ thống
 ---
 
 ## 4. Cập nhật trạng thái đơn hàng (Admin)
+
 Dành cho quản trị viên để cập nhật trạng thái xử lý của đơn hàng.
 
 - **Phương thức:** `POST`
 - **URL:** `{{base_url}}/status`
-- **Headers:** 
+- **Headers:**
   - `Authorization`: `Bearer <admin_token>`
 - **Định dạng Body:** `JSON (raw)`
 - **Dữ liệu mẫu:**
+
 ```json
 {
   "orderId": "67a0a123...",
   "status": "Shipped"
 }
 ```
-- **Các trạng thái phổ biến:** `Order Placed`, `Packing`, `Shipped`, `Out for delivery`, `Delivered`.
+
+- **Các trạng thái phổ biến:** `Đã đặt hàng`, `Đang đóng gói`, `Đã giao hàng`, `Đang giao hàng`, `Đã giao thành công`.
 
 ---
 
 ## Phản hồi thường gặp (Common Responses)
 
 ### Thành công
+
 ```json
 {
   "success": true,
@@ -101,6 +111,7 @@ Dành cho quản trị viên để cập nhật trạng thái xử lý của đ�
 ```
 
 ### Thất bại
+
 ```json
 {
   "success": false,

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { assets } from "../assets/frontend_assets/assets";
@@ -11,6 +12,8 @@ const PlaceOrder = () => {
     getCartAmount,
     deliveryFee,
     products,
+    backendUrl,
+    token,
   } = useContext(ShopContext);
 
   // State lưu thông tin form giao hàng
@@ -41,7 +44,7 @@ const PlaceOrder = () => {
     e.preventDefault();
 
     try {
-      // Create order data from cart items
+      // Tạo order data từ cart items
       const orderItems = [];
       for (const items in cartItems) {
         for (const item in cartItems[items]) {
@@ -52,17 +55,7 @@ const PlaceOrder = () => {
             if (itemInfo) {
               itemInfo.size = item;
               itemInfo.quantity = cartItems[items][item];
-              orderItems.push({
-                ...itemInfo,
-                _id: `${itemInfo._id}-${item}-${Date.now()}`, // Create unique ID
-                date: new Date().toISOString(),
-                payment: true,
-                paymentMethod:
-                  method === "cod"
-                    ? "Thanh toán khi nhận hàng"
-                    : "Thanh toán online",
-                status: "Đang xử lý",
-              });
+              orderItems.push(itemInfo);
             }
           }
         }
@@ -73,26 +66,37 @@ const PlaceOrder = () => {
         return;
       }
 
-      // Load existing orders from localStorage
-      const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+      // Tạo order data
+      const orderData = {
+        address: formData,
+        amount: getCartAmount() + deliveryFee,
+        items: orderItems,
+      };
 
-      // Add new order to the list
-      const newOrders = [...orderItems, ...existingOrders];
+      switch (method) {
+        case "cod": {
+          const response = await axios.post(
+            `${backendUrl}/api/order/place`,
+            orderData,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          if (response.data.success) {
+            setCartItems({});
+            toast.success("Đặt hàng thành công!");
+            navigate("/orders");
+          } else {
+            toast.error(response.data.message || "Đặt hàng thất bại");
+          }
+          break;
+        }
 
-      // Save to localStorage
-      localStorage.setItem("orders", JSON.stringify(newOrders));
-
-      // Clear cart
-      setCartItems({});
-
-      // Show success message
-      toast.success("Đặt hàng thành công!");
-
-      // Navigate to orders page
-      navigate("/orders");
+        // cases khác cho Stripe, Razorpay có thể thêm sau
+        default:
+          toast.error("Phương thức thanh toán không được hỗ trợ");
+      }
     } catch (error) {
       console.log(error);
-      toast.error("Có lỗi xảy ra khi đặt hàng");
+      toast.error(error.message || "Có lỗi xảy ra khi đặt hàng");
     }
   };
 
@@ -256,7 +260,9 @@ const PlaceOrder = () => {
               type="button"
             >
               <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${method === "stripe" ? "bg-green-400" : ""}`}
+                className={`min-w-3.5 h-3.5 border rounded-full ${
+                  method === "stripe" ? "bg-green-400" : ""
+                }`}
               ></p>
               <img alt="Stripe" className="mx-4 h-5" src={assets.stripeLogo} />
             </button>
@@ -267,7 +273,9 @@ const PlaceOrder = () => {
               type="button"
             >
               <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${method === "razorpay" ? "bg-green-400" : ""}`}
+                className={`min-w-3.5 h-3.5 border rounded-full ${
+                  method === "razorpay" ? "bg-green-400" : ""
+                }`}
               ></p>
               <img
                 alt="Razorpay"
@@ -282,7 +290,9 @@ const PlaceOrder = () => {
               type="button"
             >
               <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${method === "cod" ? "bg-green-400" : ""}`}
+                className={`min-w-3.5 h-3.5 border rounded-full ${
+                  method === "cod" ? "bg-green-400" : ""
+                }`}
               ></p>
               <p className="mx-4 font-medium text-gray-500 text-sm">
                 THANH TOÁN KHI NHẬN HÀNG

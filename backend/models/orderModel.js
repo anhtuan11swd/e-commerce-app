@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema({
   items: { required: true, type: Array },
   payment: { default: false, required: true, type: Boolean },
   paymentMethod: { required: true, type: String },
-  status: { default: "Order Placed", required: true, type: String },
+  status: { default: "Đã đặt hàng", required: true, type: String },
   userId: { required: true, type: String },
 });
 
