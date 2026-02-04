@@ -17,7 +17,7 @@ function App() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <ToastContainer />
+      <ToastContainer autoClose={500} />
       {token === "" ? (
         <Login setToken={setToken} />
       ) : (

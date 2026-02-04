@@ -44,6 +44,7 @@ const Orders = ({ token }) => {
       );
 
       if (response.data.success) {
+        toast.success("Cập nhật trạng thái đơn hàng thành công");
         await fetchAllOrders();
       }
     } catch (error) {
@@ -73,66 +74,63 @@ const Orders = ({ token }) => {
   }, [token]);
 
   return (
-    <div className="mx-auto my-8 ml-[max(5vw,25px)] w-[70%] text-gray-600 text-base">
+    <div>
+      <h3>Trang Đơn Hàng</h3>
       <div>
-        <h3>Trang Đơn Hàng</h3>
-        <div>
-          {orders.map((order) => (
-            <div
-              className="items-start gap-3 grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] my-3 md:my-4 p-5 md:p-8 border-2 border-gray-200 text-gray-700 text-xs sm:text-sm"
-              key={order._id}
-            >
-              <img
-                alt=""
-                className="w-12"
-                src={order.items[0]?.image?.[0] || assets.parcel_icon}
-              />
+        {orders.map((order) => (
+          <div
+            className="items-start gap-3 grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] my-3 md:my-4 p-5 md:p-8 border-2 border-gray-200 text-gray-700 text-xs sm:text-sm"
+            key={order._id}
+          >
+            <img
+              alt=""
+              className="w-12"
+              src={order.items[0]?.image?.[0] || assets.parcel_icon}
+            />
+            <div>
               <div>
-                <div>
-                  {order.items.map((item, itemIndex) => (
-                    <p className="py-0.5" key={`${order._id}-${itemIndex}`}>
-                      {item.name} x {item.quantity} <span> {item.size} </span>
-                    </p>
-                  ))}
-                </div>
-                <p className="mt-3 mb-2 font-medium">
-                  {`${order.address.firstName} ${order.address.lastName}`}
-                </p>
-                <div>
-                  <p>{`${order.address.street},`}</p>
-                  <p>
-                    {`${order.address.city}, ${order.address.state}, ${order.address.country}, ${order.address.zipcode}`}
+                {order.items.map((item, itemIndex) => (
+                  <p className="py-0.5" key={`${order._id}-${itemIndex}`}>
+                    {item.name} x {item.quantity} <span> {item.size} </span>
                   </p>
-                </div>
+                ))}
               </div>
-              <div>
-                <p className="sm:text-[15px] text-sm">
-                  Sản phẩm : {order.items.length}
-                </p>
-                <p className="mt-3">Phương thức : {order.paymentMethod}</p>
-                <p>
-                  Thanh toán :{" "}
-                  {order.payment ? "Hoàn thành" : "Chưa thanh toán"}
-                </p>
-                <p>Ngày : {new Date(order.date).toLocaleDateString()}</p>
-              </div>
-              <p className="sm:text-[15px] text-sm">
-                {formatCurrency(order.amount)}
+              <p className="mt-3 mb-2 font-medium">
+                {`${order.address.firstName} ${order.address.lastName}`}
               </p>
-              <select
-                className="p-2 font-semibold"
-                onChange={(event) => statusHandler(event, order._id)}
-                value={order.status}
-              >
-                <option value="Order Placed">Đã đặt hàng</option>
-                <option value="Packing">Đang đóng gói</option>
-                <option value="Shipped">Đã giao hàng</option>
-                <option value="Out for delivery">Đang vận chuyển</option>
-                <option value="Delivered">Đã giao thành công</option>
-              </select>
+              <div>
+                <p>{`${order.address.street},`}</p>
+                <p>
+                  {`${order.address.city}, ${order.address.state}, ${order.address.country}, ${order.address.zipcode}`}
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
+            <div>
+              <p className="sm:text-[15px] text-sm">
+                Sản phẩm : {order.items.length}
+              </p>
+              <p className="mt-3">Phương thức : {order.paymentMethod}</p>
+              <p>
+                Thanh toán : {order.payment ? "Hoàn thành" : "Chưa thanh toán"}
+              </p>
+              <p>Ngày : {new Date(order.date).toLocaleDateString()}</p>
+            </div>
+            <p className="sm:text-[15px] text-sm">
+              {formatCurrency(order.amount)}
+            </p>
+            <select
+              className="p-2 font-semibold"
+              onChange={(event) => statusHandler(event, order._id)}
+              value={order.status}
+            >
+              <option value="Order Placed">Đã đặt hàng</option>
+              <option value="Packing">Đang đóng gói</option>
+              <option value="Shipped">Đã giao hàng</option>
+              <option value="Out for delivery">Đang vận chuyển</option>
+              <option value="Delivered">Đã giao thành công</option>
+            </select>
+          </div>
+        ))}
       </div>
     </div>
   );

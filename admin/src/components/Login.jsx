@@ -15,6 +15,7 @@ const Login = ({ setToken }) => {
         password,
       });
       if (response.data.success) {
+        toast.success("Đăng nhập thành công");
         setToken(response.data.token);
       } else {
         toast.error(response.data.message);
@@ -26,7 +27,6 @@ const Login = ({ setToken }) => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="Toastify"></div>
       <div className="flex justify-center items-center w-full min-h-screen">
         <div className="bg-white shadow-md px-8 py-6 rounded-lg max-w-md">
           <h1 className="mb-4 font-bold text-2xl">Bảng Điều Khiển Quản Trị</h1>

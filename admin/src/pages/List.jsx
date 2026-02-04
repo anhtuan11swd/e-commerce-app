@@ -63,7 +63,7 @@ const List = ({ token }) => {
   }, []);
 
   return (
-    <div className="mx-auto my-8 ml-[max(5vw,25px)] w-[70%] text-gray-600 text-base">
+    <>
       <p className="mb-2">Danh Sách Tất Cả Sản Phẩm</p>
       <div className="flex flex-col gap-2">
         <div className="hidden items-center md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr] bg-gray-100 px-2 py-1 border text-sm">
@@ -94,7 +94,7 @@ const List = ({ token }) => {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
