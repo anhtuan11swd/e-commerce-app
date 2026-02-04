@@ -29,10 +29,13 @@ function App() {
             <div className="mx-auto my-8 ml-[max(5vw,25px)] w-[70%] text-gray-600 text-base">
               <Routes>
                 <Route element={<Navigate replace to="/admin" />} path="/" />
-                <Route element={<Add />} path="/admin/add" />
-                <Route element={<List />} path="/admin/list" />
-                <Route element={<Orders />} path="/admin/orders" />
-                <Route element={<Add />} path="/admin" />
+                <Route element={<Add token={token} />} path="/admin/add" />
+                <Route element={<List token={token} />} path="/admin/list" />
+                <Route
+                  element={<Orders token={token} />}
+                  path="/admin/orders"
+                />
+                <Route element={<Add token={token} />} path="/admin" />
               </Routes>
             </div>
           </div>
