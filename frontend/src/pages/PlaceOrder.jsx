@@ -16,7 +16,6 @@ const PlaceOrder = () => {
     token,
   } = useContext(ShopContext);
 
-  // State lưu thông tin form giao hàng
   const [formData, setFormData] = useState({
     city: "",
     country: "",
@@ -29,22 +28,18 @@ const PlaceOrder = () => {
     zipcode: "",
   });
 
-  // State lưu phương thức thanh toán (cod = thanh toán khi nhận hàng)
   const [method, setMethod] = useState("cod");
 
-  // Xử lý thay đổi input form
   const onChangeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
-  // Xử lý submit form đặt hàng
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      // Tạo order data từ cart items
       const orderItems = [];
       for (const items in cartItems) {
         for (const item in cartItems[items]) {
@@ -66,7 +61,6 @@ const PlaceOrder = () => {
         return;
       }
 
-      // Tạo order data
       const orderData = {
         address: formData,
         amount: getCartAmount() + deliveryFee,
@@ -90,7 +84,6 @@ const PlaceOrder = () => {
           break;
         }
 
-        // cases khác cho Stripe, Razorpay có thể thêm sau
         default:
           toast.error("Phương thức thanh toán không được hỗ trợ");
       }
@@ -100,13 +93,11 @@ const PlaceOrder = () => {
     }
   };
 
-  // Render form đặt hàng với thông tin giao hàng và thanh toán
   return (
     <form
       className="flex sm:flex-row flex-col justify-between gap-4 pt-5 sm:pt-14 border-t min-h-[80vh]"
       onSubmit={onSubmitHandler}
     >
-      {/* Thông tin giao hàng */}
       <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
         <div className="my-3 text-xl sm:text-2xl">
           <div className="inline-flex items-center gap-2 mb-3">
@@ -211,7 +202,6 @@ const PlaceOrder = () => {
         />
       </div>
 
-      {/* Tổng giỏ hàng & Phương thức thanh toán */}
       <div className="mt-8">
         <div className="mt-8 min-w-80">
           <div className="w-full">

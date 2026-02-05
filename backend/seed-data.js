@@ -11,16 +11,14 @@ import productModel from "./models/productModel.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ham upload anh len Cloudinary
 const uploadImagesToCloudinary = async (imagePaths) => {
   const uploadedUrls = [];
   for (const imagePath of imagePaths) {
     try {
-      // Tao duong dan tuyet doi den file anh
       const fullPath = path.join(__dirname, "frontend_assets", imagePath);
       if (!fs.existsSync(fullPath)) {
         console.log(`Bo qua file khong ton tai: ${imagePath}`);
-        uploadedUrls.push(`/frontend_assets/${imagePath}`); // Su dung duong dan tuong doi
+        uploadedUrls.push(`/frontend_assets/${imagePath}`);
         continue;
       }
 
@@ -32,7 +30,8 @@ const uploadImagesToCloudinary = async (imagePaths) => {
       console.log(`Da upload: ${result.secure_url}`);
     } catch (error) {
       console.error(`Loi upload ${imagePath}:`, error.message);
-      uploadedUrls.push(`/frontend_assets/${imagePath}`); // Su dung duong dan tuong doi neu upload that bai
+      // Fallback: sử dụng đường dẫn tương đối nếu upload thất bại
+      uploadedUrls.push(`/frontend_assets/${imagePath}`);
     }
   }
   return uploadedUrls;
@@ -724,7 +723,6 @@ const seedDatabase = async () => {
     await connectCloudinary();
     console.log("Da ket noi database va Cloudinary thanh cong!");
 
-    // Kiem tra so luong san pham hien tai
     const existingProductsCount = await productModel.countDocuments();
     console.log(
       `So san pham hien tai trong database: ${existingProductsCount}`,
@@ -737,12 +735,10 @@ const seedDatabase = async () => {
 
     console.log("Bat dau upload anh va them du lieu mau...");
 
-    // Upload anh va map du lieu tu sampleProducts sang dinh dang database
     const productsToInsert = [];
     for (const product of sampleProducts) {
       console.log(`Dang xu ly san pham: ${product.name}`);
 
-      // Upload anh len Cloudinary
       const imageUrls = await uploadImagesToCloudinary(product.images);
 
       const productData = {
@@ -760,7 +756,6 @@ const seedDatabase = async () => {
       productsToInsert.push(productData);
     }
 
-    // Them du lieu vao database
     const result = await productModel.insertMany(productsToInsert);
     console.log(`Da them thanh cong ${result.length} san pham vao database!`);
 
@@ -769,12 +764,10 @@ const seedDatabase = async () => {
     console.error("Loi khi seeding database:", error.message);
     process.exit(1);
   } finally {
-    // Dong ket noi database
     await mongoose.connection.close();
     console.log("Da dong ket noi database.");
     process.exit(0);
   }
 };
 
-// Chạy script seeding
 seedDatabase();

@@ -5,19 +5,13 @@ import ProductItem from "../components/ProductItem";
 import { ShopContext } from "../context/ShopContext";
 
 const Product = () => {
-  // Lấy ID sản phẩm từ URL params
   const { productId } = useParams();
   const { products, addToCart } = useContext(ShopContext);
-  // State lưu thông tin sản phẩm hiện tại
   const [productData, setProductData] = useState(null);
-  // State lưu ảnh đang được chọn
   const [image, setImage] = useState("");
-  // State lưu size được chọn
   const [size, setSize] = useState("");
-  // State lưu tab đang active (mô tả/đánh giá)
   const [activeTab, setActiveTab] = useState("description");
 
-  // useEffect để tải dữ liệu sản phẩm khi component mount hoặc productId thay đổi
   useEffect(() => {
     const fetchProductData = async () => {
       const product = products.find((item) => item._id === productId);
@@ -30,12 +24,10 @@ const Product = () => {
     fetchProductData();
   }, [productId, products]);
 
-  // Xử lý thêm sản phẩm vào giỏ hàng
   const addToCartHandler = () => {
     addToCart(productData._id, size);
   };
 
-  // Định dạng giá tiền theo chuẩn Việt Nam
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       currency: "VND",
@@ -47,7 +39,6 @@ const Product = () => {
     return <div className="py-10 text-center">Đang tải...</div>;
   }
 
-  // Lọc sản phẩm liên quan (cùng category nhưng khác ID, lấy tối đa 5 sản phẩm)
   const relatedProducts = products
     .filter(
       (item) =>
@@ -55,11 +46,9 @@ const Product = () => {
     )
     .slice(0, 5);
 
-  // Render trang chi tiết sản phẩm
   return (
     <div className="opacity-100 pt-10 border-t-2 transition-opacity duration-500 ease-in">
       <div className="flex sm:flex-row flex-col gap-12 sm:gap-12">
-        {/* Gallery ảnh */}
         <div className="flex sm:flex-row flex-col-reverse flex-1 gap-3">
           <div className="flex sm:flex-col justify-between sm:justify-normal w-full sm:w-[18.7%]">
             {productData.image.map((img, index) => (
@@ -83,11 +72,9 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Thông tin sản phẩm */}
         <div className="flex-1">
           <h1 className="mt-2 font-medium text-2xl">{productData.name}</h1>
 
-          {/* Đánh giá sao */}
           <div className="flex items-center gap-1 mt-2">
             {[...Array(5)].map((_, i) => (
               <img
@@ -100,17 +87,14 @@ const Product = () => {
             <p className="pl-2">(122)</p>
           </div>
 
-          {/* Giá */}
           <p className="mt-5 font-medium text-3xl">
             {formatPrice(productData.price)}
           </p>
 
-          {/* Mô tả */}
           <p className="mt-5 md:w-4/5 text-gray-500">
             {productData.description}
           </p>
 
-          {/* Chọn size */}
           <div className="flex flex-col gap-4 my-8">
             <p>Chọn Size</p>
             <div className="flex gap-2">
@@ -134,7 +118,6 @@ const Product = () => {
             </div>
           </div>
 
-          {/* Nút thêm vào giỏ */}
           <button
             className="bg-black hover:bg-gray-800 active:bg-gray-700 px-8 py-3 text-white text-sm transition-colors"
             onClick={addToCartHandler}
@@ -145,7 +128,6 @@ const Product = () => {
 
           <hr className="mt-8 sm:w-4/5" />
 
-          {/* Thông tin bổ sung */}
           <div className="flex flex-col gap-1 mt-5 text-gray-500 text-sm">
             <p>100% Sản phẩm chính hãng.</p>
             <p>Thanh toán khi nhận hàng có sẵn.</p>
@@ -154,7 +136,6 @@ const Product = () => {
         </div>
       </div>
 
-      {/* Tab Description/Reviews */}
       <div className="mt-20">
         <div className="flex">
           <button
@@ -245,7 +226,6 @@ const Product = () => {
         </div>
       </div>
 
-      {/* Sản phẩm liên quan */}
       <div className="my-24">
         <div className="py-2 text-3xl text-center">
           <div className="inline-flex items-center gap-2 mb-3">

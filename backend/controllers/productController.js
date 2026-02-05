@@ -1,7 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import productModel from "../models/productModel.js";
 
-// Hàm thêm sản phẩm mới
 const addProduct = async (req, res) => {
   try {
     const {
@@ -14,18 +13,15 @@ const addProduct = async (req, res) => {
       bestseller,
     } = req.body;
 
-    // Trích xuất các tệp hình ảnh từ yêu cầu
     const image1 = req.files.image1?.[0];
     const image2 = req.files.image2?.[0];
     const image3 = req.files.image3?.[0];
     const image4 = req.files.image4?.[0];
 
-    // Lọc bỏ các giá trị undefined để chỉ giữ lại các tệp thực tế
     const images = [image1, image2, image3, image4].filter(
       (item) => item !== undefined,
     );
 
-    // Tải hình ảnh lên Cloudinary và nhận URL
     const imagesUrl = await Promise.all(
       images.map(async (item) => {
         const result = await cloudinary.uploader.upload(item.path, {
@@ -35,7 +31,6 @@ const addProduct = async (req, res) => {
       }),
     );
 
-    // Chuẩn bị dữ liệu sản phẩm để lưu vào cơ sở dữ liệu
     const productData = {
       bestseller: bestseller === "true",
       category,
@@ -58,7 +53,6 @@ const addProduct = async (req, res) => {
   }
 };
 
-// Hàm lấy danh sách tất cả sản phẩm
 const listProducts = async (_req, res) => {
   try {
     const products = await productModel.find({});
@@ -69,7 +63,6 @@ const listProducts = async (_req, res) => {
   }
 };
 
-// Hàm xóa sản phẩm theo ID
 const removeProduct = async (req, res) => {
   try {
     await productModel.findByIdAndDelete(req.body.id);
@@ -80,7 +73,6 @@ const removeProduct = async (req, res) => {
   }
 };
 
-// Hàm lấy thông tin chi tiết của một sản phẩm
 const singleProduct = async (req, res) => {
   try {
     const { productId } = req.body;

@@ -8,17 +8,14 @@ import { ShopContext } from "../context/ShopContext";
  * Hiển thị danh sách sản phẩm với khả năng lọc theo danh mục, loại và tìm kiếm
  */
 const Collection = () => {
-  // Lấy dữ liệu từ ShopContext
   const { products, productsLoading, search, showSearch } =
     useContext(ShopContext);
 
-  // State cho bộ lọc
-  const [category, setCategory] = useState([]); // Danh mục được chọn
-  const [subCategory, setSubCategory] = useState([]); // Loại sản phẩm được chọn
-  const [sortType, setSortType] = useState("relevant"); // Kiểu sắp xếp
-  const [showFilters, setShowFilters] = useState(false); // Hiển thị bộ lọc trên mobile
+  const [category, setCategory] = useState([]);
+  const [subCategory, setSubCategory] = useState([]);
+  const [sortType, setSortType] = useState("relevant");
+  const [showFilters, setShowFilters] = useState(false);
 
-  // Lấy danh sách categories và subcategories duy nhất từ products
   const availableCategories = productsLoading
     ? []
     : [...new Set(products.map((p) => p.category))];
@@ -26,14 +23,12 @@ const Collection = () => {
     ? []
     : [...new Set(products.map((p) => p.subCategory))];
 
-  // Xử lý checkbox category
   const handleCategoryChange = (value) => {
     setCategory((prev) =>
       prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value],
     );
   };
 
-  // Xử lý checkbox subCategory
   const handleSubCategoryChange = (value) => {
     setSubCategory((prev) =>
       prev.includes(value)
@@ -86,10 +81,7 @@ const Collection = () => {
     return productsCopy;
   }, [category, subCategory, search, showSearch, sortType, products]);
 
-  // Logic lọc và sắp xếp - đã được implement trong filterProducts useMemo
-
   return (
-    // Layout chính: sidebar bộ lọc + lưới sản phẩm
     <div className="flex sm:flex-row flex-col gap-1 sm:gap-10 pt-10 border-t">
       {/* Thanh bộ lọc bên */}
       <div className="min-w-60">
@@ -108,7 +100,6 @@ const Collection = () => {
           />
         </button>
 
-        {/* Bộ lọc danh mục */}
         <div
           className={`border border-gray-300 pl-5 py-3 mt-6 ${
             showFilters ? "block" : "hidden"
@@ -131,7 +122,6 @@ const Collection = () => {
           </div>
         </div>
 
-        {/* Bộ lọc loại sản phẩm */}
         <div
           className={`border border-gray-300 pl-5 py-3 my-5 ${
             showFilters ? "block" : "hidden"
@@ -155,9 +145,7 @@ const Collection = () => {
         </div>
       </div>
 
-      {/* Lưới sản phẩm */}
       <div className="flex-1">
-        {/* Header với title và sort */}
         <div className="flex justify-between mb-4 text-base sm:text-2xl">
           <div className="inline-flex items-center gap-2 mb-3">
             <p className="text-gray-500">
@@ -177,10 +165,8 @@ const Collection = () => {
           </select>
         </div>
 
-        {/* Lưới sản phẩm responsive */}
         <div className="gap-4 gap-y-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {productsLoading ? (
-            // Loading state
             ["sk1", "sk2", "sk3", "sk4", "sk5", "sk6", "sk7", "sk8"].map(
               (key) => (
                 <div className="animate-pulse" key={key}>
@@ -191,12 +177,10 @@ const Collection = () => {
               ),
             )
           ) : filterProducts.length > 0 ? (
-            // Render danh sách sản phẩm đã lọc
             filterProducts.map((product) => (
               <ProductItem key={product._id} product={product} />
             ))
           ) : (
-            // Thông báo khi không có sản phẩm
             <p className="col-span-full py-10 text-gray-500 text-center">
               {products.length === 0
                 ? "Đang tải dữ liệu sản phẩm..."

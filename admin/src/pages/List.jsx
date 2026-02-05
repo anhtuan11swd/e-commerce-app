@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { backendUrl } from "../config";
 
@@ -13,7 +13,7 @@ const formatCurrency = (value) => {
 const List = ({ token }) => {
   const [list, setList] = useState([]);
 
-  const fetchList = async () => {
+  const fetchList = useCallback(async () => {
     try {
       const response = await axios.get(`${backendUrl}/api/product/list`);
       if (response.data.success) {
@@ -22,10 +22,9 @@ const List = ({ token }) => {
     } catch (error) {
       toast.error(error.message);
     }
-  };
+  }, []);
 
   const removeProduct = async (id) => {
-    // Thêm xác nhận trước khi xóa
     const confirmDelete = window.confirm(
       "Bạn có chắc chắn muốn xóa sản phẩm này?",
     );
@@ -41,7 +40,7 @@ const List = ({ token }) => {
       );
       if (response.data.success) {
         toast.success(response.data.message);
-        await fetchList(); // Cần load lại để cập nhật UI
+        await fetchList();
       }
     } catch (error) {
       toast.error(error.message);
@@ -49,18 +48,9 @@ const List = ({ token }) => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${backendUrl}/api/product/list`);
-        if (response.data.success) {
-          setList(response.data.products);
-        }
-      } catch (error) {
-        toast.error(error.message);
-      }
-    };
-    fetchData();
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchList();
+  }, [fetchList]);
 
   return (
     <>
@@ -84,7 +74,7 @@ const List = ({ token }) => {
             <p>{item.category}</p>
             <p>{formatCurrency(item.price)}</p>
             <button
-              aria-label={`Xóa ${item.name}`} // Cho screen reader hiểu chức năng
+              aria-label={`Xóa ${item.name}`}
               className="bg-transparent border-none text-lg md:text-center text-right cursor-pointer"
               onClick={() => removeProduct(item._id)}
               type="button"

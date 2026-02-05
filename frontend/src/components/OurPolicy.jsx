@@ -1,8 +1,5 @@
 import { assets } from "../assets/frontend_assets/assets";
 
-/**
- * OurPolicy - Component hiển thị các chính sách của cửa hàng: đổi trả, trả hàng và hỗ trợ khách hàng
- */
 const OurPolicy = () => {
   return (
     <div className="flex sm:flex-row flex-col justify-around gap-12 sm:gap-2 py-20 text-gray-700 text-xs sm:text-sm md:text-base text-center">

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { ShopContext } from "../context/ShopContext";
 import ProductItem from "./ProductItem";
 import Title from "./Title";
@@ -6,17 +6,11 @@ import Title from "./Title";
 const BestSeller = () => {
   const { products, productsLoading } = useContext(ShopContext);
 
-  // Lọc sản phẩm bán chạy nhất (bestseller: true) và lấy 5 sản phẩm đầu tiên
   const bestSellerProducts = useMemo(() => {
     return products
       .filter((product) => product.bestseller === true)
       .slice(0, 5);
   }, [products]);
-
-  // Logic lọc products - sẽ được trigger khi products thay đổi
-  useEffect(() => {
-    // logic lọc products
-  }, []);
 
   return (
     <div className="my-10">
@@ -26,10 +20,8 @@ const BestSeller = () => {
         text2="BÁN CHẠY NHẤT"
       />
 
-      {/* Lưới sản phẩm */}
       <div className="gap-4 gap-y-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {productsLoading ? (
-          // Loading state
           ["sk1", "sk2", "sk3", "sk4", "sk5"].map((key) => (
             <div className="animate-pulse" key={key}>
               <div className="bg-gray-200 mb-3 rounded-lg aspect-square"></div>

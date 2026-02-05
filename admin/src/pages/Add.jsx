@@ -30,10 +30,10 @@ const Add = ({ token }) => {
       formData.append("bestseller", bestseller);
       formData.append("sizes", JSON.stringify(sizes));
 
-      image1 && formData.append("image1", image1);
-      image2 && formData.append("image2", image2);
-      image3 && formData.append("image3", image3);
-      image4 && formData.append("image4", image4);
+      // Thêm các hình ảnh đã chọn vào form data
+      [image1, image2, image3, image4].forEach((image, index) => {
+        if (image) formData.append(`image${index + 1}`, image);
+      });
 
       const response = await axios.post(
         `${backendUrl}/api/product/add`,
@@ -45,7 +45,6 @@ const Add = ({ token }) => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-        // Đặt lại form
         setName("");
         setDescription("");
         setImage1(false);
@@ -61,16 +60,16 @@ const Add = ({ token }) => {
     }
   };
 
+  // Toggle kích thước: thêm nếu chưa có, xóa nếu đã có
   const handleSizeChange = (size) => {
     setSizes((prev) =>
       prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
     );
   };
 
+  // Format số thành tiền tệ Việt Nam với dấu chấm ngăn cách
   const formatCurrency = (value) => {
-    // Loại bỏ tất cả ký tự không phải số
     const numericValue = value.replace(/[^\d]/g, "");
-    // Format thành tiền Việt Nam
     return new Intl.NumberFormat("vi-VN", {
       currency: "VND",
       style: "currency",
@@ -79,7 +78,6 @@ const Add = ({ token }) => {
 
   const handlePriceChange = (e) => {
     const value = e.target.value;
-    // Chỉ cho phép nhập số
     const numericValue = value.replace(/[^\d]/g, "");
     setPrice(numericValue);
   };

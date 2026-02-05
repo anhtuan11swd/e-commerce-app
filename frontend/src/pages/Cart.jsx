@@ -15,7 +15,6 @@ import { ShopContext } from "../context/ShopContext";
 const Cart = () => {
   const { cartItems, products, deliveryFee, updateQuantity, navigate } =
     useContext(ShopContext);
-  // Chuyển đổi cartItems thành cartData array
   const cartData = useMemo(() => {
     const tempData = [];
     for (const items in cartItems) {
@@ -32,7 +31,6 @@ const Cart = () => {
     return tempData;
   }, [cartItems]);
 
-  // Định dạng giá tiền sang VNĐ
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       currency: "VND",
@@ -40,16 +38,15 @@ const Cart = () => {
     }).format(price);
   };
 
-  // Xử lý cập nhật số lượng sản phẩm
+  // Xử lý thay đổi số lượng sản phẩm, tự động xóa khi quantity <= 0
+  // Dọn dẹp cấu trúc nested object khi không còn size nào
   const handleQuantityChange = (itemId, size, newQuantity) => {
     if (newQuantity <= 0) {
-      // Xóa sản phẩm nếu số lượng <= 0
       const updatedCartItems = { ...cartItems };
       delete updatedCartItems[itemId][size];
       if (Object.keys(updatedCartItems[itemId]).length === 0) {
         delete updatedCartItems[itemId];
       }
-      // Cập nhật cartItems thông qua context
       updateQuantity(itemId, size, 0);
       toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
     } else {
@@ -58,13 +55,11 @@ const Cart = () => {
     }
   };
 
-  // Xử lý xóa sản phẩm
   const handleRemoveItem = (itemId, size) => {
     updateQuantity(itemId, size, 0);
     toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
   };
 
-  // Tính tổng phụ (subtotal)
   const getSubtotal = () => {
     return cartData.reduce((total, item) => {
       const product = products.find((p) => p._id === item._id);
@@ -72,7 +67,6 @@ const Cart = () => {
     }, 0);
   };
 
-  // Tính tổng tiền (total)
   const getTotal = () => {
     return getSubtotal() + deliveryFee;
   };

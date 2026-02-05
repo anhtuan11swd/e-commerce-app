@@ -19,7 +19,7 @@ const ProductItem = ({ product }) => {
         <img
           alt={product.name}
           className="w-full h-auto hover:scale-110 transition ease-in-out"
-          src={product.image?.[0] || product.images?.[0]}
+          src={product.image?.[0] || product.images?.[0]} // Fallback để tương thích với cấu trúc dữ liệu cũ/mới
         />
       </div>
       <p className="pt-3 pb-1 text-sm">{product.name}</p>

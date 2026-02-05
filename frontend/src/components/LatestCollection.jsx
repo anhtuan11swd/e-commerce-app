@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { ShopContext } from "../context/ShopContext";
 import ProductItem from "./ProductItem";
 import Title from "./Title";
@@ -6,15 +6,10 @@ import Title from "./Title";
 const LatestCollection = () => {
   const { products, productsLoading } = useContext(ShopContext);
 
-  // Lấy 10 sản phẩm mới nhất dựa trên thời gian tạo
+  // Sắp xếp sản phẩm theo thời gian tạo (mới nhất trước) và lấy 10 sản phẩm đầu
   const latestProducts = useMemo(() => {
     return [...products].sort((a, b) => b.createdAt - a.createdAt).slice(0, 10);
   }, [products]);
-
-  // Logic lọc products - sẽ được trigger khi products thay đổi
-  useEffect(() => {
-    // logic lọc products
-  }, []);
 
   return (
     <div className="my-10">
@@ -24,10 +19,8 @@ const LatestCollection = () => {
         text2="MỚI NHẤT"
       />
 
-      {/* Lưới sản phẩm */}
       <div className="gap-4 gap-y-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {productsLoading ? (
-          // Loading state
           [
             "sk1",
             "sk2",

@@ -4,7 +4,6 @@ import NewsletterBox from "../components/NewsletterBox";
 const About = () => {
   return (
     <div>
-      {/* Tiêu đề VỀ CHÚNG TÔI */}
       <div className="pt-8 border-t text-2xl text-center">
         <div className="inline-flex items-center gap-2 mb-3">
           <p className="text-gray-500">
@@ -14,7 +13,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* Nội dung chính với hình ảnh và mô tả */}
       <div className="flex md:flex-row flex-col gap-16 my-10">
         <img
           alt="Về Forever"
@@ -46,7 +44,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* Tiêu đề TẠI SAO CHỌN CHÚNG TÔI */}
       <div className="py-4 text-xl">
         <div className="inline-flex items-center gap-2 mb-3">
           <p className="text-gray-500">
@@ -57,7 +54,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* Các thẻ lý do chọn chúng tôi */}
       <div className="flex md:flex-row flex-col mb-20 text-sm">
         <div className="flex flex-col gap-5 px-10 md:px-16 py-8 sm:py-20 border">
           <b>Đảm bảo chất lượng:</b>
@@ -82,7 +78,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* Phần đăng ký bản tin */}
       <NewsletterBox />
     </div>
   );

@@ -3,14 +3,7 @@ import { createContext, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-/**
- * ShopContext - Context quản lý trạng thái toàn cục của cửa hàng e-commerce
- */
 const ShopContext = createContext();
-
-/**
- * ShopContextProvider - Provider cung cấp các chức năng quản lý giỏ hàng, tìm kiếm, tiền tệ
- */
 export default function ShopContextProvider({ children }) {
   const [products, setProducts] = useState([]);
   const [currency] = useState("$");
@@ -23,9 +16,6 @@ export default function ShopContextProvider({ children }) {
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-  /**
-   * getProductsData - Lấy danh sách sản phẩm từ API backend
-   */
   const getProductsData = useCallback(async () => {
     try {
       setProductsLoading(true);
@@ -33,34 +23,27 @@ export default function ShopContextProvider({ children }) {
       if (response.data.success) {
         setProducts(response.data.products);
       } else {
-        console.log("Không thể lấy dữ liệu sản phẩm từ API");
         setProducts([]);
       }
-    } catch (error) {
-      console.log("Lỗi khi kết nối với backend:", error.message);
+    } catch {
       setProducts([]);
     } finally {
       setProductsLoading(false);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch products khi component mount
   useEffect(() => {
     getProductsData();
   }, [getProductsData]);
 
-  /**
-   * addToCart - Thêm sản phẩm vào giỏ hàng
-   * @param {string} itemId - ID sản phẩm
-   * @param {string} size - Kích thước sản phẩm
-   */
+  // Xử lý logic thêm sản phẩm vào giỏ hàng với đồng bộ hai chiều
+  // Cấu trúc cartItems: { productId: { size: quantity } }
   const addToCart = async (itemId, size) => {
     if (!size) {
       toast.error("Vui lòng chọn kích thước sản phẩm");
       return;
     }
 
-    // Cập nhật local cart
     const cartData = structuredClone(cartItems);
 
     if (cartData[itemId]) {
@@ -76,7 +59,6 @@ export default function ShopContextProvider({ children }) {
     setCartItems(cartData);
     toast.success("Đã thêm sản phẩm vào giỏ hàng!");
 
-    // Đồng bộ với database nếu có token
     if (token) {
       try {
         await axios.post(
@@ -90,10 +72,8 @@ export default function ShopContextProvider({ children }) {
     }
   };
 
-  /**
-   * getCartCount - Lấy tổng số lượng sản phẩm trong giỏ
-   * @returns {number} Tổng số lượng
-   */
+  // Tính tổng số lượng sản phẩm trong giỏ hàng
+  // Duyệt qua cấu trúc nested object { productId: { size: quantity } }
   const getCartCount = () => {
     let totalCount = 0;
     for (const items in cartItems) {
@@ -106,12 +86,8 @@ export default function ShopContextProvider({ children }) {
     return totalCount;
   };
 
-  /**
-   * updateQuantity - Cập nhật số lượng sản phẩm
-   * @param {string} itemId - ID sản phẩm
-   * @param {string} size - Kích thước
-   * @param {number} quantity - Số lượng mới
-   */
+  // Cập nhật số lượng sản phẩm trong giỏ hàng với đồng bộ server
+  // Xử lý việc xóa sản phẩm khi quantity = 0
   const updateQuantity = async (itemId, size, quantity) => {
     const cartData = structuredClone(cartItems);
 
@@ -133,10 +109,6 @@ export default function ShopContextProvider({ children }) {
     }
   };
 
-  /**
-   * getUserCart - Lấy dữ liệu giỏ hàng của user từ database
-   * @param {string} token - Token xác thực
-   */
   const getUserCart = useCallback(async (token) => {
     try {
       const response = await axios.post(
@@ -153,17 +125,15 @@ export default function ShopContextProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Load user cart khi có token (login/reload)
+  // Tự động tải giỏ hàng từ server khi user đăng nhập
   useEffect(() => {
     if (token && localStorage.getItem("token")) {
       getUserCart(localStorage.getItem("token"));
     }
   }, [token, getUserCart]);
 
-  /**
-   * getCartAmount - Tính tổng tiền giỏ hàng
-   * @returns {number} Tổng tiền
-   */
+  // Tính tổng tiền giỏ hàng dựa trên cấu trúc nested object
+  // Duyệt qua { productId: { size: quantity } } để tính tổng giá trị
   const getCartAmount = () => {
     let totalAmount = 0;
     for (const itemId in cartItems) {

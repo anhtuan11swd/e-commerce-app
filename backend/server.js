@@ -11,15 +11,12 @@ import userRouter from "./routes/userRoute.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Kết nối database
 connectDB();
 connectCloudinary();
 
-// Middlewares
 app.use(express.json());
 app.use(cors());
 
-// API endpoints
 app.get("/", (_req, res) => res.send("API đang hoạt động"));
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);

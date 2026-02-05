@@ -7,12 +7,10 @@ const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Kiểm tra người dùng đã tồn tại chưa
     const exists = await userModel.findOne({ email });
     if (exists)
       return res.json({ message: "Người dùng đã tồn tại", success: false });
 
-    // Xác thực email và mật khẩu
     if (!validator.isEmail(email)) {
       return res.json({
         message: "Vui lòng nhập email hợp lệ",
@@ -26,15 +24,12 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Mã hóa mật khẩu
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Tạo người dùng mới
     const newUser = new userModel({ email, name, password: hashedPassword });
     const user = await newUser.save();
 
-    // Tạo token xác thực
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     res.json({ success: true, token });
   } catch (error) {
@@ -70,6 +65,7 @@ const adminLogin = async (req, res) => {
       email === process.env.ADMIN_EMAIL &&
       password === process.env.ADMIN_PASSWORD
     ) {
+      // Admin sử dụng email+password làm payload thay vì user ID
       const token = jwt.sign(email + password, process.env.JWT_SECRET);
       res.json({ success: true, token });
     } else {

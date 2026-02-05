@@ -3,8 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { assets } from "../assets/frontend_assets/assets";
 import { ShopContext } from "../context/ShopContext";
 
-// Component helper cho NavLink với hiệu ứng active
-// NavLinkWithActive: Component hỗ trợ hiển thị trạng thái active cho các liên kết điều hướng
+// Component wrapper cho NavLink với indicator trạng thái active
 const NavLinkWithActive = ({ to, children }) => (
   <NavLink
     className={({ isActive }) =>
@@ -17,7 +16,6 @@ const NavLinkWithActive = ({ to, children }) => (
     {({ isActive }) => (
       <>
         <p>{children}</p>
-        {/* Đường kẻ dưới (underline) chỉ hiển thị khi link đang active */}
         <hr
           className={`w-2/4 border-none h-[1.5px] bg-gray-700 ${
             isActive ? "block" : "hidden"
@@ -28,18 +26,12 @@ const NavLinkWithActive = ({ to, children }) => (
   </NavLink>
 );
 
-// Component Navbar - Thanh điều hướng chính của ứng dụng
-// Bao gồm logo, menu điều hướng, và các icon chức năng (tìm kiếm, hồ sơ, giỏ hàng)
-// Hỗ trợ responsive design với menu mobile dạng sidebar
 const Navbar = () => {
-  // State để kiểm soát hiển thị menu mobile
   const [visible, setVisible] = useState(false);
 
-  // Lấy dữ liệu từ ShopContext
   const { getCartCount, navigate, setToken, setCartItems } =
     useContext(ShopContext);
 
-  // Hàm đăng xuất
   const logout = () => {
     navigate("/login");
     localStorage.removeItem("token");
@@ -49,12 +41,10 @@ const Navbar = () => {
 
   return (
     <div className="flex justify-between items-center py-5 font-medium">
-      {/* Logo - Biểu tượng thương hiệu */}
       <Link to="/">
         <img alt="Logo thương hiệu" className="w-36" src={assets.logo} />
       </Link>
 
-      {/* Menu Desktop - Menu dành cho màn hình lớn */}
       <ul className="hidden sm:flex gap-5 text-gray-700 text-sm">
         <NavLinkWithActive to="/">TRANG CHỦ</NavLinkWithActive>
         <NavLinkWithActive to="/collection">BỘ SƯU TẬP</NavLinkWithActive>
@@ -62,16 +52,13 @@ const Navbar = () => {
         <NavLinkWithActive to="/contact">LIÊN HỆ</NavLinkWithActive>
       </ul>
 
-      {/* Icons bên phải - Các biểu tượng bên phải */}
       <div className="flex items-center gap-6">
-        {/* Icon tìm kiếm - Biểu tượng tìm kiếm */}
         <img
           alt="Tìm kiếm"
           className="w-5 cursor-pointer"
           src={assets.searchIcon}
         />
 
-        {/* Dropdown hồ sơ - Menu xổ xuống hồ sơ */}
         <div className="group relative">
           <img
             alt="Hồ sơ"
@@ -99,7 +86,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Icon giỏ hàng - Biểu tượng giỏ hàng */}
         <Link className="relative" to="/cart">
           <img alt="Giỏ hàng" className="w-5 min-w-5" src={assets.cartIcon} />
           <p className="right-[-5px] bottom-[-5px] absolute bg-black rounded-full w-4 aspect-square text-[8px] text-white text-center leading-4">
@@ -107,7 +93,6 @@ const Navbar = () => {
           </p>
         </Link>
 
-        {/* Icon menu mobile - Biểu tượng menu cho thiết bị di động */}
         <button
           aria-label="Mở menu"
           className="sm:hidden"
@@ -122,7 +107,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Menu thanh bên mobile - Menu dạng thanh bên cho thiết bị di động */}
       <div
         className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${
           visible ? "w-full" : "w-0"

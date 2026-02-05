@@ -1,6 +1,3 @@
-/**
- * NewsletterBox - Component hiển thị form đăng ký newsletter với ưu đãi giảm giá 20%
- */
 const NewsletterBox = () => {
   return (
     <div className="text-center">

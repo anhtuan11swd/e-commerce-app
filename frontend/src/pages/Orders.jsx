@@ -6,7 +6,6 @@ import { ShopContext } from "../context/ShopContext";
 const Orders = () => {
   const { backendUrl, token } = useContext(ShopContext);
 
-  // Định dạng giá tiền theo chuẩn Việt Nam
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       currency: "VND",
@@ -14,10 +13,8 @@ const Orders = () => {
     }).format(price);
   };
 
-  // State lưu trữ dữ liệu đơn hàng
   const [orderData, setOrderData] = useState([]);
 
-  // Load đơn hàng khi component mount hoặc token thay đổi
   useEffect(() => {
     const loadOrderData = async () => {
       try {
@@ -50,7 +47,6 @@ const Orders = () => {
     loadOrderData();
   }, [token, backendUrl]);
 
-  // Render danh sách đơn hàng
   return (
     <div className="pt-16 border-t">
       <div className="text-2xl">
