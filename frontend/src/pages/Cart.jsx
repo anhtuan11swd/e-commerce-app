@@ -1,4 +1,5 @@
 import { useContext, useMemo } from "react";
+import { toast } from "react-toastify";
 import { assets } from "../assets/frontend_assets/assets";
 import { ShopContext } from "../context/ShopContext";
 
@@ -50,14 +51,17 @@ const Cart = () => {
       }
       // Cập nhật cartItems thông qua context
       updateQuantity(itemId, size, 0);
+      toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
     } else {
       updateQuantity(itemId, size, newQuantity);
+      toast.success("Đã cập nhật số lượng sản phẩm!");
     }
   };
 
   // Xử lý xóa sản phẩm
   const handleRemoveItem = (itemId, size) => {
     updateQuantity(itemId, size, 0);
+    toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
   };
 
   // Tính tổng phụ (subtotal)

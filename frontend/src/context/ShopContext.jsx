@@ -74,6 +74,7 @@ export default function ShopContextProvider({ children }) {
     }
 
     setCartItems(cartData);
+    toast.success("Đã thêm sản phẩm vào giỏ hàng!");
 
     // Đồng bộ với database nếu có token
     if (token) {
@@ -84,7 +85,7 @@ export default function ShopContextProvider({ children }) {
           { headers: { Authorization: `Bearer ${token}` } },
         );
       } catch (error) {
-        toast.error(error.message || "Không thể thêm vào giỏ hàng");
+        toast.error(error.message || "Không thể đồng bộ với server");
       }
     }
   };

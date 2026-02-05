@@ -123,11 +123,11 @@ const Orders = ({ token }) => {
               onChange={(event) => statusHandler(event, order._id)}
               value={order.status}
             >
-              <option value="Order Placed">Đã đặt hàng</option>
-              <option value="Packing">Đang đóng gói</option>
-              <option value="Shipped">Đã giao hàng</option>
-              <option value="Out for delivery">Đang vận chuyển</option>
-              <option value="Delivered">Đã giao thành công</option>
+              <option value="Đã đặt hàng">Đã đặt hàng</option>
+              <option value="Đang đóng gói">Đang đóng gói</option>
+              <option value="Đã giao hàng">Đã giao hàng</option>
+              <option value="Đang vận chuyển">Đang vận chuyển</option>
+              <option value="Đã giao thành công">Đã giao thành công</option>
             </select>
           </div>
         ))}

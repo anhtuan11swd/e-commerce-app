@@ -81,7 +81,9 @@ const Navbar = () => {
           <div className="hidden group-hover:block right-0 absolute pt-4 dropdown-menu">
             <div className="flex flex-col gap-2 bg-slate-100 px-5 py-3 rounded w-36 text-gray-500">
               <p className="hover:text-black cursor-pointer">Hồ sơ của tôi</p>
-              <p className="hover:text-black cursor-pointer">Đơn hàng</p>
+              <Link className="hover:text-black cursor-pointer" to="/orders">
+                Đơn hàng
+              </Link>
               <p
                 className="hover:text-black cursor-pointer"
                 onClick={logout}
