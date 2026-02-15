@@ -16,30 +16,31 @@ function App() {
   }, [token]);
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <ToastContainer autoClose={500} />
+    <div className="bg-gray-50/50 min-h-screen">
+      <ToastContainer autoClose={500} position="top-right" theme="colored" />
       {token === "" ? (
         <Login setToken={setToken} />
       ) : (
-        <>
+        <div className="flex flex-col min-h-screen">
           <Navbar setToken={setToken} />
-          <hr />
-          <div className="flex w-full">
+          <div className="flex flex-1">
             <Sidebar />
-            <div className="mx-auto my-8 ml-[max(5vw,25px)] w-[70%] text-gray-600 text-base">
-              <Routes>
-                <Route element={<Navigate replace to="/admin" />} path="/" />
-                <Route element={<Add token={token} />} path="/admin/add" />
-                <Route element={<List token={token} />} path="/admin/list" />
-                <Route
-                  element={<Orders token={token} />}
-                  path="/admin/orders"
-                />
-                <Route element={<Add token={token} />} path="/admin" />
-              </Routes>
-            </div>
+            <main className="flex-1 ml-64 p-6 lg:p-8">
+              <div className="mx-auto max-w-6xl">
+                <Routes>
+                  <Route element={<Navigate replace to="/admin" />} path="/" />
+                  <Route element={<Add token={token} />} path="/admin/add" />
+                  <Route element={<List token={token} />} path="/admin/list" />
+                  <Route
+                    element={<Orders token={token} />}
+                    path="/admin/orders"
+                  />
+                  <Route element={<Add token={token} />} path="/admin" />
+                </Routes>
+              </div>
+            </main>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
